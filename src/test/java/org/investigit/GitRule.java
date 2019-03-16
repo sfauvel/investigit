@@ -1,4 +1,4 @@
-package org.spike;
+package org.investigit;
 
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -90,11 +90,7 @@ public class GitRule extends TestWatcher {
     }
 
     public Repository buildRepository() throws IOException {
-        File gitDir = Paths.get(getWorkingPath().getAbsolutePath(), "/.git").toFile();
-        return new FileRepositoryBuilder()
-                .setGitDir(gitDir)
-                .setMustExist(true)
-                .build();
+        return InvestigateLog.buildRepository(Paths.get(getWorkingPath().getAbsolutePath(), "/.git").toFile());
     }
 
     private class PrintOutput extends Thread {

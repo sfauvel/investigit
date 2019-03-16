@@ -1,4 +1,6 @@
-package org.spike;
+package org.investigit;
+
+import org.investigit.model.Commit;
 
 import java.util.*;
 import java.util.Map.Entry;

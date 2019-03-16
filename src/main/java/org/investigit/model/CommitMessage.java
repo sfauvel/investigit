@@ -1,4 +1,4 @@
-package org.spike;
+package org.investigit.model;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;

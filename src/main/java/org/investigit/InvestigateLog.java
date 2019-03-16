@@ -1,4 +1,4 @@
-package org.spike;
+package org.investigit;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -12,6 +12,10 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.EmptyTreeIterator;
+import org.investigit.app.Config;
+import org.investigit.model.Commit;
+import org.investigit.model.CommitMessage;
+import org.investigit.model.ModificationType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -24,101 +28,30 @@ import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.summingInt;
 
-
-// VOIR https://codescene.io/docs/index.html
-
 /**
- * Simple snippet which shows how to get the commit-ids for a file to provide log information.
- *
- * @author dominik.stadler at gmx.at
+ * Retrieve commits from repository.
  */
-public class ShowLog {
+public class InvestigateLog {
 
-    final static String path =
-            "/home/sfauvel/Documents/projects/games/freecol/freecol-git";
-//            "/home/sfauvel/Documents/projects/test_resources";
 
     final private PrintStream out;
 
-    public ShowLog(PrintStream out) {
+
+    public static Repository buildRepository(File gitDir) throws IOException {
+        return new FileRepositoryBuilder()
+                .setGitDir(gitDir)
+                .setMustExist(true)
+                .build();
+    }
+
+    public InvestigateLog(PrintStream out) {
         this.out = out;
     }
 
-    enum ModificationType {
-        Add, Delete, Modify, Rename, Undefined;
-
-        public String firstLetter() {
-            return name().substring(0, 1);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public static void main(String[] args) throws Exception {
-        new ShowLog(System.out).exec(new File(path + "/.git"));
-    }
-
-    public void exec(File gitDir) throws Exception {
-        Repository repo = buildRepository(gitDir);
-
-
-        // To show commit with change files
-        // git log --stat
-
-//        commitMessages(repo);
-
-
-//        displayCommit(commits);
-//
-//        commitCalendar(commits);
-        // commitWithoutTest(commits);
-//        modifyTogether(commits);
-
-        {
-
-            List<Commit> commits = getCommits(repo, 100);
-            List<Entry<String, Integer>> commitList = new MostModify()
-                    .filter(file -> file.endsWith(".java"))
-                    .atLeast(20)
-                    .exec(commits);
-
-            commitList
-                    .stream()
-                    .map(e -> e.getValue() + ": " + e.getKey())
-                    .forEach(out::println);
-        }
-        {
-
-            List<Commit> commits = getCommits(repo, 1000);
-
-            Map<String, Integer> collect = commitByPackage(commits);
-            collect
-                    .entrySet()
-                    .stream()
-                    .sorted(Entry.<String, Integer>comparingByValue().reversed())
-                    .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
-
-
-            int blocSize = 50;
-            List<Map<String, Integer>> collectSplit = IntStream.range(0, Math.floorDiv(commits.size(), blocSize))
-                    .mapToObj(i -> commits.subList(i * blocSize, (i + 1) * blocSize))
-                    .map(this::commitByPackage)
-                    .collect(Collectors.toList());
-
-            Map<String, List<Integer>> stringListMap = new MostModify().groupListOfMap(collectSplit);
-
-            stringListMap.entrySet().forEach(m -> System.out.println(m.getKey() + " | "
-                    + m.getValue().stream().map(String::valueOf).collect(Collectors.joining("|"))));
-
-
-        }
-
-    }
-
-    private Map<String, Integer> commitByPackage(List<Commit> commits) {
+    public Map<String, Integer> commitByPackage(List<Commit> commits) {
         List<Entry<String, Integer>> commitList = new MostModify()
                 .filter(file -> file.endsWith(".java"))
                 .exec(commits);
@@ -126,19 +59,6 @@ public class ShowLog {
         // Group by package
         return commitList.stream()
                 .collect(Collectors.groupingBy(e1 -> new File(e1.getKey()).getParent(), summingInt(Entry::getValue)));
-    }
-
-    public Repository buildRepository(File gitDir) throws IOException {
-        return new FileRepositoryBuilder()
-                .setGitDir(gitDir)
-                .setMustExist(true)
-                .build();
-    }
-
-
-    private void commitMessages(Repository repo) throws GitAPIException {
-        CommitMessage commitMessage = new CommitMessage(1000, "dd/MM/yyyy");
-        commitMessage.exec(repo, out);
     }
 
     private static RevCommit getHeadCommit(Repository repository) throws Exception {

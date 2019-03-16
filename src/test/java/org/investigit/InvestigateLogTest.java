@@ -1,6 +1,8 @@
-package org.spike;
+package org.investigit;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.investigit.model.Commit;
+import org.investigit.model.ModificationType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ShowLogTest {
+public class InvestigateLogTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -22,14 +24,14 @@ public class ShowLogTest {
     @Rule
     public GitRule gitRule = new GitRule();
 
-    private ShowLog showLog;
+    private InvestigateLog showLog;
 
     @Before
     public void init() {
         gitRule.setWorkingPath(folder.getRoot());
         gitRule.execInWorkingPath("git init");
 
-        showLog = new ShowLog(gitRule.printStream);
+        showLog = new InvestigateLog(gitRule.printStream);
     }
 
     @Test
@@ -61,13 +63,13 @@ public class ShowLogTest {
 
         int index = 0;
         assertEquals("third commit", commits.get(index).getShortMessage());
-        assertEquals(ShowLog.ModificationType.Add, commits.get(index).getFiles().get("fileC.txt"));
+        assertEquals(ModificationType.Add, commits.get(index).getFiles().get("fileC.txt"));
         index++;
         assertEquals("second commit", commits.get(index).getShortMessage());
-        assertEquals(ShowLog.ModificationType.Add, commits.get(index).getFiles().get("fileB.txt"));
+        assertEquals(ModificationType.Add, commits.get(index).getFiles().get("fileB.txt"));
         index++;
         assertEquals("first commit", commits.get(index).getShortMessage());
-        assertEquals(ShowLog.ModificationType.Add, commits.get(index).getFiles().get("fileA.txt"));
+        assertEquals(ModificationType.Add, commits.get(index).getFiles().get("fileA.txt"));
     }
 
 
@@ -84,7 +86,7 @@ public class ShowLogTest {
 
         Commit commit = commits.get(0);
         assertEquals("delete file", commit.getShortMessage());
-        assertEquals(ShowLog.ModificationType.Delete, commit.getFiles().get("fileB.txt"));
+        assertEquals(ModificationType.Delete, commit.getFiles().get("fileB.txt"));
     }
 
     @Test
@@ -100,7 +102,7 @@ public class ShowLogTest {
 
         Commit commit = commits.get(0);
         assertEquals("modify file", commit.getShortMessage());
-        assertEquals(ShowLog.ModificationType.Modify, commit.getFiles().get("fileB.txt"));
+        assertEquals(ModificationType.Modify, commit.getFiles().get("fileB.txt"));
     }
 
     @Test
@@ -116,9 +118,9 @@ public class ShowLogTest {
 
         Commit commit = commits.get(0);
         assertEquals("rename file", commit.getShortMessage());
-        assertEquals(ShowLog.ModificationType.Rename, commit.getFiles().get("fileRename.txt"));
-//        assertEquals(ShowLog.ModificationType.Delete, commit.files.get("fileB.txt"));
-//        assertEquals(ShowLog.ModificationType.Add, commit.files.get("fileRename.txt"));
+        assertEquals(ModificationType.Rename, commit.getFiles().get("fileRename.txt"));
+//        assertEquals(InvestigateLog.ModificationType.Delete, commit.files.get("fileB.txt"));
+//        assertEquals(InvestigateLog.ModificationType.Add, commit.files.get("fileRename.txt"));
     }
 
     @Test

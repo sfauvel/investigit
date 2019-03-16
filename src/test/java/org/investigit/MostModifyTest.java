@@ -1,6 +1,7 @@
-package org.spike;
+package org.investigit;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.investigit.model.Commit;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -8,7 +9,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -21,13 +21,13 @@ public class MostModifyTest {
     @Rule
     public GitRule gitRule = new GitRule();
 
-    private ShowLog showLog;
+    private InvestigateLog showLog;
 
     @Before
     public void init() {
         gitRule.setWorkingPath(folder.getRoot());
 
-        showLog = new ShowLog(gitRule.printStream);
+        showLog = new InvestigateLog(gitRule.printStream);
     }
 
     @Test

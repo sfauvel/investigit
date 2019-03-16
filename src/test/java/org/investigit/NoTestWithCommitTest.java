@@ -1,14 +1,13 @@
-package org.spike;
+package org.investigit;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.investigit.model.Commit;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class NoTestWithCommitTest {
     @Rule
     public GitRule gitRule = new GitRule();
 
-    private ShowLog showLog;
+    private InvestigateLog showLog;
 
     private NoTestWithCommit noTestWithCommit = new NoTestWithCommit();
 
@@ -31,7 +30,7 @@ public class NoTestWithCommitTest {
         gitRule.setWorkingPath(folder.getRoot());
         gitRule.execInWorkingPath("git init");
 
-        showLog = new ShowLog(gitRule.printStream);
+        showLog = new InvestigateLog(gitRule.printStream);
     }
 
     @Test
