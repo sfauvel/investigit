@@ -8,6 +8,8 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class CommitMessage {
     private int limit;
@@ -23,11 +25,14 @@ public class CommitMessage {
     }
 
     public void exec(Repository repo, PrintStream out) throws GitAPIException {
+        exec(repo).forEach(out::println);;
+    }
+
+    public Stream<String> exec(Repository repo) throws GitAPIException {
         Iterable<RevCommit> log = new Git(repo).log().call();
-        for (RevCommit rev : log) {
-            out.println(format(rev));
-            if (limit-- < 0) return;
-        }
+        return StreamSupport.stream(log.spliterator(), false)
+                .limit(limit)
+                .map(this::format);
     }
 
     protected String format(RevCommit rev) {

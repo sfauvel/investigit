@@ -39,15 +39,14 @@ public class CommitMessages {
 
 
     final private static PrintStream out = System.out;
+    final private static File gitDir = new File(Config.path + "/.git");
 
     public static void main(String[] args) throws IOException, GitAPIException {
-        InvestigateLog investigate = new InvestigateLog(out);
 
-        File gitDir = new File(Config.path + "/.git");
-        Repository repo = investigate.buildRepository(gitDir);
+        Repository repo = new InvestigateLog(out).buildRepository(gitDir);
 
         CommitMessage commitMessage = new CommitMessage(1000, "dd/MM/yyyy");
-        commitMessage.exec(repo, out);
+        commitMessage.exec(repo).forEach(out::println);
 
     }
 

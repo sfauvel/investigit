@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class NoTestWithCommitTest {
+public class CommitWithoutTestTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -23,7 +23,7 @@ public class NoTestWithCommitTest {
 
     private InvestigateLog showLog;
 
-    private NoTestWithCommit noTestWithCommit = new NoTestWithCommit();
+    private CommitWithoutTest commitWithoutTest = new CommitWithoutTest();
 
     @Before
     public void init() {
@@ -40,7 +40,7 @@ public class NoTestWithCommitTest {
 
         List<Commit> commits = showLog.getCommits(gitRule.buildRepository());
 
-        List<Commit> commitsWithoutTest = noTestWithCommit.exec(commits);
+        List<Commit> commitsWithoutTest = commitWithoutTest.exec(commits);
 
         assertEquals(1, commitsWithoutTest.size());
 
@@ -54,7 +54,7 @@ public class NoTestWithCommitTest {
 
         List<Commit> commits = showLog.getCommits(gitRule.buildRepository());
 
-        List<Commit> commitsWithoutTest = noTestWithCommit.exec(commits);
+        List<Commit> commitsWithoutTest = commitWithoutTest.exec(commits);
 
         assertEquals(0, commitsWithoutTest.size());
 
@@ -73,7 +73,7 @@ public class NoTestWithCommitTest {
 
         List<Commit> commits = showLog.getCommits(gitRule.buildRepository());
 
-        List<Commit> commitsWithoutTest = noTestWithCommit.exec(commits);
+        List<Commit> commitsWithoutTest = commitWithoutTest.exec(commits);
 
         assertEquals(1, commitsWithoutTest.size());
         assertEquals("B", commitsWithoutTest.get(0).getShortMessage());
