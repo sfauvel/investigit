@@ -79,4 +79,25 @@ public class CommitWithoutTestTest {
         assertEquals("B", commitsWithoutTest.get(0).getShortMessage());
 
     }
+
+    @Test
+    public void should_filter_commits_without_source_files() throws IOException, GitAPIException {
+        gitRule.createFile("fileA.java", Arrays.asList("line A"))
+                .createFile("fileATest.java", Arrays.asList("line A"))
+                .gitCommitAll("A");
+        gitRule.createFile("fileB.java", Arrays.asList("line A"))
+                .gitCommitAll("B");
+        gitRule.createFile("README.md", Arrays.asList("line A"))
+                .gitCommitAll("C");
+
+        List<Commit> commits = showLog.getCommits(gitRule.buildRepository());
+
+        CommitWithoutTest commitWithoutTest = new CommitWithoutTest()
+                .excludeFiles(name -> name.endsWith(".md"));
+        List<Commit> commitsWithoutTest = commitWithoutTest.exec(commits);
+
+        assertEquals(1, commitsWithoutTest.size());
+        assertEquals("B", commitsWithoutTest.get(0).getShortMessage());
+
+    }
 }
