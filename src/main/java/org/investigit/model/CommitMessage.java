@@ -6,8 +6,6 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -36,9 +34,7 @@ public class CommitMessage {
     }
 
     protected String format(RevCommit rev) {
-        Date authorDate = rev.getAuthorIdent().getWhen();
-
-        String format = new SimpleDateFormat(dateFormat).format(authorDate);
-        return rev.getName().substring(0, 10) + " " + format + ": " + rev.getShortMessage();
+        return Formatter.idAndMessage(rev, dateFormat);
     }
+
 }
